@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from cinema.views import CinemaApiV
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/cinema/', CinemaApiV.as_view())
 ]
