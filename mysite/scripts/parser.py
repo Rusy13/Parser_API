@@ -8,14 +8,34 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 import time
-from save_file import save_to_database
 from selenium.webdriver.support.ui import Select
 
 
-sys.path.append('/home/ubunto/Desktop/SAL/mysite')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+
+# sys.path.append('../')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.mysite.settings')
+
 django.setup()
 
+from cinema.models import Cinema
+
+
+def save_to_database(item_name, item_locale, item_street, item_legal_entity, item_website, item_inn, item_latitude, item_longitude):
+    cinema = Cinema(
+        name=item_name,
+        locale=item_locale,
+        street=item_street,
+        legal_entity=item_legal_entity,
+        website=item_website,
+        inn=item_inn,
+        latitude=item_latitude,
+        longitude=item_longitude
+    )
+    cinema.save()
 
 driver = webdriver.Chrome()
 
@@ -56,6 +76,7 @@ while True:
                 latitude = cells[6].find_element(By.TAG_NAME, 'div').get_attribute('data-lat')
                 longitude = cells[6].find_element(By.TAG_NAME, 'div').get_attribute('data-lng')
                 i += 1
+                print(native_name, city, address, organization, website, inn, latitude, longitude)
                 save_to_database(native_name, city, address, organization, website, inn, latitude, longitude)
 
         next_page_button = driver.find_element(By.XPATH, '//a[@class="paginate_button next"]')
